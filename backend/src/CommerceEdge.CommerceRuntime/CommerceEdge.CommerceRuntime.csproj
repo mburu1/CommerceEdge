@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>CommerceEdge.CommerceRuntime</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommerceEdge.Domain\CommerceEdge.Domain.csproj" />
+    <ProjectReference Include="..\CommerceEdge.Application\CommerceEdge.Application.csproj" />
+  </ItemGroup>
+</Project>

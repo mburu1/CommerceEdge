@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <AssemblyName>CommerceEdge.HardwareStation</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommerceEdge.Application\CommerceEdge.Application.csproj" />
+    <ProjectReference Include="..\CommerceEdge.Domain\CommerceEdge.Domain.csproj" />
+  </ItemGroup>
+</Project>

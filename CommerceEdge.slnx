@@ -1,0 +1,25 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Configuration Name="Debug" />
+    <Configuration Name="Release" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="backend/src/CommerceEdge.Api/CommerceEdge.Api.csproj" />
+    <Project Path="backend/src/CommerceEdge.Application/CommerceEdge.Application.csproj" />
+    <Project Path="backend/src/CommerceEdge.Domain/CommerceEdge.Domain.csproj" />
+    <Project Path="backend/src/CommerceEdge.Infrastructure/CommerceEdge.Infrastructure.csproj" />
+    <Project Path="backend/src/CommerceEdge.CommerceRuntime/CommerceEdge.CommerceRuntime.csproj" />
+    <Project Path="backend/src/CommerceEdge.ScaleUnit/CommerceEdge.ScaleUnit.csproj" />
+    <Project Path="backend/src/CommerceEdge.HardwareStation/CommerceEdge.HardwareStation.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="backend/tests/CommerceEdge.Domain.Tests/CommerceEdge.Domain.Tests.csproj" />
+    <Project Path="backend/tests/CommerceEdge.Application.Tests/CommerceEdge.Application.Tests.csproj" />
+    <Project Path="backend/tests/CommerceEdge.Infrastructure.Tests/CommerceEdge.Infrastructure.Tests.csproj" />
+    <Project Path="backend/tests/CommerceEdge.Api.IntegrationTests/CommerceEdge.Api.IntegrationTests.csproj" />
+    <Project Path="backend/tests/CommerceEdge.CommerceRuntime.Tests/CommerceEdge.CommerceRuntime.Tests.csproj" />
+    <Project Path="backend/tests/CommerceEdge.ScaleUnit.Tests/CommerceEdge.ScaleUnit.Tests.csproj" />
+    <Project Path="backend/tests/CommerceEdge.ContractTests/CommerceEdge.ContractTests.csproj" />
+  </Folder>
+</Solution>

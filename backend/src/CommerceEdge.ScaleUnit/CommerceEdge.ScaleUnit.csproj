@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <AssemblyName>CommerceEdge.ScaleUnit</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommerceEdge.CommerceRuntime\CommerceEdge.CommerceRuntime.csproj" />
+    <ProjectReference Include="..\CommerceEdge.Application\CommerceEdge.Application.csproj" />
+    <ProjectReference Include="..\CommerceEdge.Domain\CommerceEdge.Domain.csproj" />
+  </ItemGroup>
+</Project>

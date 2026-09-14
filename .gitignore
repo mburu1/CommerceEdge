@@ -1,0 +1,46 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.nupkg
+*.snupkg
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# .NET secrets
+**/appsettings.*.json
+!**/appsettings.Development.json
+
+# Node / npm
+node_modules/
+dist/
+.cache/
+*.tsbuildinfo
+
+# Vite
+web/commerce-edge-web/dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+*.swp
+*.swo
+
+# Docker
+infra/docker/**/data/
+
+# Logs
+*.log
+logs/
