@@ -11,6 +11,9 @@ coverage/
 *.coverage
 *.coveragexml
 
+.amazonq/rules/memory-bank/
+
+
 # .NET secrets
 **/appsettings.*.json
 !**/appsettings.Development.json
