@@ -12,6 +12,8 @@ coverage/
 *.coveragexml
 
 .amazonq/rules/memory-bank/
+.github/
+
 
 
 # .NET secrets
