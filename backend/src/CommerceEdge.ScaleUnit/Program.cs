@@ -1,13 +1,15 @@
-using CommerceEdge.Api.Extensions;
-using CommerceEdge.Api.Middleware;
 using CommerceEdge.Application.DependencyInjection;
+using CommerceEdge.CommerceRuntime.Extensions;
+using CommerceEdge.ScaleUnit.Extensions;
+using CommerceEdge.ScaleUnit.Middleware;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddApplication();
-builder.Services.AddApiServices(builder.Configuration);
+builder.Services.AddCommerceRuntime();
+builder.Services.AddScaleUnit(builder.Configuration);
 
 var app = builder.Build();
 

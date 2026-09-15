@@ -1,0 +1,43 @@
+using CommerceEdge.Domain.Exceptions;
+using FluentValidation;
+using System.Text.Json;
+
+namespace CommerceEdge.Api.Middleware;
+
+public sealed class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
+{
+    public async Task InvokeAsync(HttpContext ctx)
+    {
+        try
+        {
+            await next(ctx);
+        }
+        catch (Exception ex)
+        {
+            await HandleAsync(ctx, ex, logger);
+        }
+    }
+
+    private static async Task HandleAsync(HttpContext ctx, Exception ex, ILogger logger)
+    {
+        var (status, title, errors) = ex switch
+        {
+            NotFoundException nfe => (StatusCodes.Status404NotFound, nfe.Message, (object?)null),
+            DomainException de => (StatusCodes.Status422UnprocessableEntity, de.Message, (object?)null),
+            ValidationException ve => (StatusCodes.Status400BadRequest, "Validation failed.",
+                (object)ve.Errors.GroupBy(e => e.PropertyName).ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray())),
+            _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.", (object?)null)
+        };
+
+        if (status == StatusCodes.Status500InternalServerError)
+        {
+            logger.LogError(ex, "Unhandled exception");
+        }
+
+        ctx.Response.StatusCode = status;
+        ctx.Response.ContentType = "application/problem+json";
+
+        var problem = new { title, status, errors };
+        await ctx.Response.WriteAsync(JsonSerializer.Serialize(problem));
+    }
+}

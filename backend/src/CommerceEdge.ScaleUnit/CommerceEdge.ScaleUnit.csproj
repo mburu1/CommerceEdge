@@ -7,4 +7,9 @@
     <ProjectReference Include="..\CommerceEdge.Application\CommerceEdge.Application.csproj" />
     <ProjectReference Include="..\CommerceEdge.Domain\CommerceEdge.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.*" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.*" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.*" />
+  </ItemGroup>
 </Project>

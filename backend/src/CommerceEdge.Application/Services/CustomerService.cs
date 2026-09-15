@@ -19,7 +19,9 @@ public sealed class CustomerService(
     {
         var existing = await customers.GetByEmailAsync(cmd.Email, ct);
         if (existing is not null)
+        {
             throw new DomainException($"Customer with email '{cmd.Email}' already exists.");
+        }
 
         var phone = cmd.Phone is not null ? new PhoneNumber(cmd.Phone) : null;
         var customer = Customer.Create(cmd.FirstName, cmd.LastName, new Email(cmd.Email), phone);
