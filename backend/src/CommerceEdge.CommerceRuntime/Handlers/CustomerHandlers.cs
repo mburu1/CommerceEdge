@@ -34,25 +34,25 @@ public sealed class AttachCustomerHandler(ICartService carts, ICustomerService c
 
         // Re-create cart with customer attached — cart is immutable on CustomerId after creation,
         // so we abandon the current one and start a new cart with the customer.
-        var existing = await carts.GetByIdAsync(new Application.Queries.GetCartByIdQuery(request.CartId), ct);
+        var existing = await carts.GetByIdAsync(new GetCartByIdQuery(request.CartId), ct);
         if (existing is null)
         {
             return CommerceResponse.Fail<AttachCustomerResponse>(request.RequestId, "Cart not found.");
         }
 
-        await carts.AbandonAsync(new Application.Commands.AbandonCartCommand(request.CartId), ct);
+        await carts.AbandonAsync(new AbandonCartCommand(request.CartId), ct);
 
         var newCart = await carts.CreateAsync(
-            new Application.Commands.CreateCartCommand(request.StoreId, existing.Currency, request.CustomerId), ct);
+            new CreateCartCommand(request.StoreId, existing.Currency, request.CustomerId), ct);
 
         foreach (var line in existing.Lines)
         {
-            await carts.AddLineAsync(new Application.Commands.AddCartLineCommand(
+            await carts.AddLineAsync(new AddCartLineCommand(
                 newCart.Id, line.ProductId, line.VariantId,
                 line.ProductName, line.Sku, line.UnitPrice, existing.Currency, line.Quantity), ct);
         }
 
-        var updated = await carts.GetByIdAsync(new Application.Queries.GetCartByIdQuery(newCart.Id), ct);
+        var updated = await carts.GetByIdAsync(new GetCartByIdQuery(newCart.Id), ct);
         return new AttachCustomerResponse { RequestId = request.RequestId, Success = true, Cart = updated };
     }
 }

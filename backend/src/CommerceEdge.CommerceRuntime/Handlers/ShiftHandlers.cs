@@ -1,4 +1,5 @@
 using CommerceEdge.Application.Commands;
+using CommerceEdge.Application.Queries;
 using CommerceEdge.Application.Services;
 using CommerceEdge.CommerceRuntime.Requests;
 using CommerceEdge.CommerceRuntime.Responses;
@@ -31,7 +32,7 @@ public sealed class CloseShiftHandler(IShiftService shifts)
             request.ClosingFloat,
             request.Currency), ct);
 
-        var shift = await shifts.GetByIdAsync(new Application.Queries.GetShiftByIdQuery(request.ShiftId), ct);
+        var shift = await shifts.GetByIdAsync(new GetShiftByIdQuery(request.ShiftId), ct);
         return new CloseShiftResponse { RequestId = request.RequestId, Success = true, Shift = shift };
     }
 }

@@ -24,14 +24,14 @@ public sealed class CheckoutHandler(ICartService carts, IOrderService orders, II
 
         // Create order from cart
         var order = await orders.CreateAsync(new CreateOrderCommand(
-            request.OrderNumber, request.StoreId, request.Currency, cart.CustomerId, cart.Id), ct);
+            request.OrderNumber, request.StoreId, cart.Currency, cart.CustomerId, cart.Id), ct);
 
         // Transfer lines
         foreach (var line in cart.Lines)
         {
             await orders.AddLineAsync(new AddOrderLineCommand(
                 order.Id, line.ProductId, line.VariantId,
-                line.ProductName, line.Sku, line.UnitPrice, request.Currency, line.Quantity), ct);
+                line.ProductName, line.Sku, line.UnitPrice, cart.Currency, line.Quantity), ct);
         }
 
         // Reserve inventory for each line
