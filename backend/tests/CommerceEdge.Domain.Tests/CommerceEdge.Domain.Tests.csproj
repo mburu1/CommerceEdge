@@ -8,8 +8,8 @@
     <ProjectReference Include="..\..\src\CommerceEdge.Domain\CommerceEdge.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="xunit.v3" Version="1.*" />
+    <PackageReference Include="xunit.v3" Version="4.0.1" />
     <PackageReference Include="FluentAssertions" Version="8.*" />
-    <PackageReference Include="NSubstitute" Version="5.*" />
+    <PackageReference Include="NSubstitute" Version="6.2.0" />
   </ItemGroup>
 </Project>

@@ -37,7 +37,7 @@ public class StartTransactionHandlerTests
         _cartService.CreateAsync(Arg.Any<CreateCartCommand>(), Arg.Any<CancellationToken>())
             .Returns(expectedCart);
 
-        var result = await _handler.HandleAsync(request, default);
+        var result = await _handler.HandleAsync(request, TestContext.Current.CancellationToken);
 
         result.Should().NotBeNull();
         result.Success.Should().BeTrue();
@@ -68,7 +68,7 @@ public class StartTransactionHandlerTests
         _cartService.CreateAsync(Arg.Any<CreateCartCommand>(), Arg.Any<CancellationToken>())
             .Returns(expectedCart);
 
-        await _handler.HandleAsync(request, default);
+await _handler.HandleAsync(request, TestContext.Current.CancellationToken);
 
         await _cartService.Received(1).CreateAsync(
             Arg.Is<CreateCartCommand>(c => c.CustomerId == customerId), Arg.Any<CancellationToken>());

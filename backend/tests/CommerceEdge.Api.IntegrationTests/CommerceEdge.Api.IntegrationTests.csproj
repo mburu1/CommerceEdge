@@ -12,5 +12,6 @@
     <PackageReference Include="FluentAssertions" Version="8.*" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.*" />
     <PackageReference Include="Testcontainers.MsSql" Version="4.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.*" />
   </ItemGroup>
 </Project>

@@ -35,7 +35,7 @@ public class RemoveItemHandlerTests
         _cartService.GetByIdAsync(Arg.Any<GetCartByIdQuery>(), Arg.Any<CancellationToken>())
             .Returns((CartDto?)null);
 
-        var result = await _handler.HandleAsync(request, default);
+        var result = await _handler.HandleAsync(request, TestContext.Current.CancellationToken);
 
         result.Success.Should().BeFalse();
         result.ErrorMessage.Should().Contain("Cart not found");
@@ -59,7 +59,7 @@ public class RemoveItemHandlerTests
         _cartService.GetByIdAsync(Arg.Any<GetCartByIdQuery>(), Arg.Any<CancellationToken>())
             .Returns(cart);
 
-        var result = await _handler.HandleAsync(request, default);
+        var result = await _handler.HandleAsync(request, TestContext.Current.CancellationToken);
 
         result.Success.Should().BeTrue();
         result.Cart.Should().BeEquivalentTo(cart);

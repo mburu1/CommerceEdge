@@ -30,7 +30,7 @@ public class AddItemHandlerTests
         _productService.GetBySkuAsync(Arg.Any<GetProductBySkuQuery>(), Arg.Any<CancellationToken>())
             .Returns((ProductDto?)null);
 
-        var result = await _handler.HandleAsync(request, default);
+        var result = await _handler.HandleAsync(request, TestContext.Current.CancellationToken);
 
         result.Success.Should().BeFalse();
         result.ErrorMessage.Should().Contain("not found");
@@ -45,7 +45,7 @@ public class AddItemHandlerTests
                 Guid.NewGuid(), "Test", "SKU1", "Desc", 9.99m, "USD",
                 ProductStatus.Discontinued.ToString(), [], []));
 
-        var result = await _handler.HandleAsync(request, default);
+        var result = await _handler.HandleAsync(request, TestContext.Current.CancellationToken);
 
         result.Success.Should().BeFalse();
         result.ErrorMessage.Should().Contain("not available");
@@ -63,7 +63,7 @@ public class AddItemHandlerTests
                 2, 0, 2, 0, "Available"));
 
         request = request with { Quantity = 5 };
-        var result = await _handler.HandleAsync(request, default);
+        var result = await _handler.HandleAsync(request, TestContext.Current.CancellationToken);
 
         result.Success.Should().BeFalse();
         result.ErrorMessage.Should().Contain("Insufficient stock");
@@ -78,7 +78,7 @@ public class AddItemHandlerTests
         _inventoryService.GetBySkuAsync(Arg.Any<GetInventoryBySkuQuery>(), Arg.Any<CancellationToken>())
             .Returns((InventoryDto?)null);
 
-        var result = await _handler.HandleAsync(request, default);
+        var result = await _handler.HandleAsync(request, TestContext.Current.CancellationToken);
 
         result.Success.Should().BeFalse();
         result.ErrorMessage.Should().Contain("Insufficient stock");
@@ -101,7 +101,7 @@ public class AddItemHandlerTests
         _cartService.AddLineAsync(Arg.Any<AddCartLineCommand>(), Arg.Any<CancellationToken>())
             .Returns(cart);
 
-        var result = await _handler.HandleAsync(request, default);
+        var result = await _handler.HandleAsync(request, TestContext.Current.CancellationToken);
 
         result.Success.Should().BeTrue();
         result.Cart.Should().BeEquivalentTo(cart);
@@ -128,7 +128,7 @@ public class AddItemHandlerTests
         _cartService.AddLineAsync(Arg.Any<AddCartLineCommand>(), Arg.Any<CancellationToken>())
             .Returns(new CartDto(Guid.NewGuid(), request.StoreId, null, "USD", "Active", 0, []));
 
-        var result = await _handler.HandleAsync(request, default);
+        var result = await _handler.HandleAsync(request, TestContext.Current.CancellationToken);
 
         result.Success.Should().BeTrue();
     }

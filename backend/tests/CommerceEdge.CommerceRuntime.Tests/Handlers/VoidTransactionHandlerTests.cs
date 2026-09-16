@@ -29,7 +29,7 @@ public class VoidTransactionHandlerTests
             CartId = Guid.NewGuid()
         };
 
-        var result = await _handler.HandleAsync(request, default);
+        var result = await _handler.HandleAsync(request, TestContext.Current.CancellationToken);
 
         result.Success.Should().BeTrue();
         result.RequestId.Should().Be(request.RequestId);

@@ -11,5 +11,6 @@
     <PackageReference Include="xunit.v3" Version="1.*" />
     <PackageReference Include="FluentAssertions" Version="8.*" />
     <PackageReference Include="PactNet" Version="4.*" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 </Project>
