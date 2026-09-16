@@ -53,7 +53,7 @@ public class CartTests
         cart.Lines[0].Id.Should().Be(lineId);
         cart.Lines[0].Quantity.Should().Be(5);
         cart.DomainEvents.Should().ContainSingle(e => e is CartLineAddedEvent);
-        var lineAddedEvent = (CartLineAddedEvent)cart.DomainEvents[0];
+        var lineAddedEvent = cart.DomainEvents.OfType<CartLineAddedEvent>().Single();
         lineAddedEvent.CartId.Should().Be(cart.Id);
     }
 
@@ -62,14 +62,8 @@ public class CartTests
     {
         var cart = Cart.Create(_storeId, "USD");
 
-        cart.AddLine(Guid.NewGuid(), null, "Widget", "W1", new Money(10, "USD"), 0)
-            .Invoking(_ => { })
-            .Should()
-            .Throw<DomainException>()
-            .WithMessage("Quantity must be positive.");
-
-        var act = () => cart.AddLine(Guid.NewGuid(), null, "Widget", "W1", new Money(10, "USD"), 0);
-        act.Should().Throw<DomainException>().WithMessage("Quantity must be positive.");
+        cart.Invoking(_ => _.AddLine(Guid.NewGuid(), null, "Widget", "W1", new Money(10, "USD"), 0))
+            .Should().Throw<DomainException>().WithMessage("Quantity must be positive.");
     }
 
     [Fact]
@@ -104,7 +98,7 @@ public class CartTests
 
         cart.Status.Should().Be(CartStatus.CheckedOut);
         cart.DomainEvents.Should().ContainSingle(e => e is CartCheckedOutEvent);
-        var checkoutEvent = (CartCheckedOutEvent)cart.DomainEvents[0];
+        var checkoutEvent = cart.DomainEvents.OfType<CartCheckedOutEvent>().Single();
         checkoutEvent.CartId.Should().Be(cart.Id);
     }
 
@@ -142,10 +136,9 @@ public class CartTests
     public void Abandon_WhenNotActive_IsNoOp()
     {
         var cart = Cart.Create(_storeId, "USD");
-        cart.Checkout(); // wait, empty cart checkout throws... so add a line first
         cart.AddLine(Guid.NewGuid(), null, "Widget", "W1", new Money(10, "USD"), 1);
         cart.Checkout();
         cart.Abandon();
-        cart.Status.Should().Be(CartStatus.CheckedOut); // not abandoned
+        cart.Status.Should().Be(CartStatus.CheckedOut);
     }
 }
