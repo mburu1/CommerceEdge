@@ -1,5 +1,6 @@
 using CommerceEdge.Domain.Aggregates;
 using CommerceEdge.Domain.Enums;
+using CommerceEdge.Domain.Events;
 using CommerceEdge.Domain.Exceptions;
 using CommerceEdge.Domain.ValueObjects;
 
@@ -19,7 +20,9 @@ public class CartTests
         cart.CustomerId.Should().BeNull();
         cart.Lines.Should().BeEmpty();
         cart.Subtotal.Should().Be(Money.Zero("USD"));
-        cart.DomainEvents.Should().ContainSingle(e => e is CartCreatedEvent { CartId: var id } && id == cart.Id);
+        cart.DomainEvents.Should().ContainSingle(e => e is CartCreatedEvent);
+        var createdEvent = (CartCreatedEvent)cart.DomainEvents[0];
+        createdEvent.CartId.Should().Be(cart.Id);
     }
 
     [Fact]
@@ -50,6 +53,8 @@ public class CartTests
         cart.Lines[0].Id.Should().Be(lineId);
         cart.Lines[0].Quantity.Should().Be(5);
         cart.DomainEvents.Should().ContainSingle(e => e is CartLineAddedEvent);
+        var lineAddedEvent = (CartLineAddedEvent)cart.DomainEvents[0];
+        lineAddedEvent.CartId.Should().Be(cart.Id);
     }
 
     [Fact]
@@ -77,7 +82,7 @@ public class CartTests
         cart.RemoveLine(lineId);
         cart.Lines.Should().BeEmpty();
 
-        cart.RemoveLine(Guid.NewGuid()).Invoking(_ => { }).Should().Throw<NotFoundException>();
+        cart.Invoking(_ => _.RemoveLine(Guid.NewGuid())).Should().Throw<NotFoundException>();
     }
 
     [Fact]
@@ -98,7 +103,9 @@ public class CartTests
         cart.Checkout();
 
         cart.Status.Should().Be(CartStatus.CheckedOut);
-        cart.DomainEvents.Should().ContainSingle(e => e is CartCheckedOutEvent { CartId: var id } && id == cart.Id);
+        cart.DomainEvents.Should().ContainSingle(e => e is CartCheckedOutEvent);
+        var checkoutEvent = (CartCheckedOutEvent)cart.DomainEvents[0];
+        checkoutEvent.CartId.Should().Be(cart.Id);
     }
 
     [Fact]
