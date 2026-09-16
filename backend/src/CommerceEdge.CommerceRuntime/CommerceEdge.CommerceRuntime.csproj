@@ -3,6 +3,7 @@
     <AssemblyName>CommerceEdge.CommerceRuntime</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommerceEdge.Observability\CommerceEdge.Observability.csproj" />
     <ProjectReference Include="..\CommerceEdge.Domain\CommerceEdge.Domain.csproj" />
     <ProjectReference Include="..\CommerceEdge.Application\CommerceEdge.Application.csproj" />
   </ItemGroup>

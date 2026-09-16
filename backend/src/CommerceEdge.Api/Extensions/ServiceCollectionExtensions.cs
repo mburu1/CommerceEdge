@@ -1,4 +1,6 @@
 using System.Text;
+using CommerceEdge.Api.Observability;
+using CommerceEdge.Observability.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -38,6 +40,17 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddOpenApi();
+
+        return services;
+    }
+
+    public static IServiceCollection AddApiHealthChecks(this IServiceCollection services)
+    {
+        services.AddCommerceEdgeHealthChecks(healthChecks =>
+        {
+            healthChecks.AddCheck<DatabaseHealthCheck>("database", tags: ["ready"]);
+            healthChecks.AddCheck<RedisHealthCheck>("redis", tags: ["ready"]);
+        });
 
         return services;
     }

@@ -1,5 +1,5 @@
+using CommerceEdge.Observability;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 
 namespace CommerceEdge.Application.Behaviors;
 
@@ -7,31 +7,35 @@ public sealed class LoggingBehavior(ILogger<LoggingBehavior> logger)
 {
     public async Task<T> ExecuteAsync<T>(string operationName, Func<Task<T>> next)
     {
-        var sw = Stopwatch.StartNew();
+        using var operation = CommerceEdgeTelemetry.Measure(operationName);
+
         try
         {
             var result = await next();
-            logger.LogInformation("{Operation} completed in {Elapsed}ms", operationName, sw.ElapsedMilliseconds);
+            logger.LogInformation("{Operation} completed in {Elapsed}ms", operationName, operation.ElapsedMilliseconds);
             return result;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "{Operation} failed after {Elapsed}ms", operationName, sw.ElapsedMilliseconds);
+            operation.MarkFailed();
+            logger.LogError(ex, "{Operation} failed after {Elapsed}ms", operationName, operation.ElapsedMilliseconds);
             throw;
         }
     }
 
     public async Task ExecuteAsync(string operationName, Func<Task> next)
     {
-        var sw = Stopwatch.StartNew();
+        using var operation = CommerceEdgeTelemetry.Measure(operationName);
+
         try
         {
             await next();
-            logger.LogInformation("{Operation} completed in {Elapsed}ms", operationName, sw.ElapsedMilliseconds);
+            logger.LogInformation("{Operation} completed in {Elapsed}ms", operationName, operation.ElapsedMilliseconds);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "{Operation} failed after {Elapsed}ms", operationName, sw.ElapsedMilliseconds);
+            operation.MarkFailed();
+            logger.LogError(ex, "{Operation} failed after {Elapsed}ms", operationName, operation.ElapsedMilliseconds);
             throw;
         }
     }

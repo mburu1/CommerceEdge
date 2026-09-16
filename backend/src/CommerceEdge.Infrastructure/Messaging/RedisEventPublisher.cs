@@ -1,5 +1,7 @@
+using System.Diagnostics.Metrics;
 using System.Text.Json;
 using CommerceEdge.Application.Abstractions;
+using CommerceEdge.Observability;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 
@@ -24,8 +26,25 @@ public sealed class RedisEventPublisher : IEventPublisher
     public async Task PublishAsync<T>(T @event, CancellationToken ct = default)
         where T : class
     {
-        var json = JsonSerializer.Serialize(@event);
-        await _db.PublishAsync(Channel, json);
-        _logger.LogDebug("Published event {EventType} ({Length} chars) to '{Channel}'", typeof(T).Name, json.Length, Channel);
+        using var operation = CommerceEdgeTelemetry.Measure(
+            "messaging.publish",
+            ("event.type", typeof(T).Name));
+
+        try
+        {
+            var json = JsonSerializer.Serialize(@event);
+            await _db.PublishAsync(Channel, json);
+            CommerceEdgeTelemetry.MessagingPublishedCount.Add(1, new System.Diagnostics.TagList
+            {
+                { "event.type", typeof(T).Name }
+            });
+            _logger.LogDebug("Published event {EventType} ({Length} chars)", typeof(T).Name, json.Length);
+        }
+        catch (Exception ex)
+        {
+            operation.MarkFailed();
+            _logger.LogWarning("Failed to publish event {EventType}: {Error}", typeof(T).Name, ex.Message);
+            throw;
+        }
     }
 }

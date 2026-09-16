@@ -9,6 +9,8 @@
     <Project Path="backend/src/CommerceEdge.Application/CommerceEdge.Application.csproj" />
     <Project Path="backend/src/CommerceEdge.Domain/CommerceEdge.Domain.csproj" />
     <Project Path="backend/src/CommerceEdge.Infrastructure/CommerceEdge.Infrastructure.csproj" />
+    <Project Path="backend/src/CommerceEdge.Observability/CommerceEdge.Observability.csproj" />
+    <Project Path="backend/src/CommerceEdge.Observability.AspNetCore/CommerceEdge.Observability.AspNetCore.csproj" />
     <Project Path="backend/src/CommerceEdge.CommerceRuntime/CommerceEdge.CommerceRuntime.csproj" />
     <Project Path="backend/src/CommerceEdge.ScaleUnit/CommerceEdge.ScaleUnit.csproj" />
     <Project Path="backend/src/CommerceEdge.HardwareStation/CommerceEdge.HardwareStation.csproj" />
