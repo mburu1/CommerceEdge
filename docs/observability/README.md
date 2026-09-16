@@ -39,6 +39,6 @@ Metric names use the `commerceedge_*` prefix for application instrumentation. Gr
 
 ## Configuration
 
-`Observability:OtlpEndpoint` controls OTLP trace and metric export. The Compose observability override points it at Jaeger's OTLP gRPC endpoint. `Observability:PrometheusEnabled` controls the `/metrics` endpoint.
+`Observability:OtlpEndpoint` controls OTLP trace export, while `Observability:OtlpMetricsEndpoint` optionally overrides metric export and `Observability:OtlpMetricsEnabled` controls whether metrics are sent through OTLP. `Observability:TraceSampleRate` accepts values from `0` through `1`; the Compose observability override points traces at Jaeger's OTLP gRPC endpoint and uses Prometheus for metrics. `Observability:PrometheusEnabled` controls the `/metrics` endpoint.
 
 Logs are written to standard output as JSON and, for the API, to the ignored `logs/` directory. Do not add credentials, tokens, payment data, or customer data to log templates or metric labels.

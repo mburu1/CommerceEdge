@@ -28,13 +28,15 @@ public class CommerceRuntimeServiceTests
 
         ActivitySource.AddActivityListener(listener);
 
+        using var parent = new Activity("test-parent").Start();
         var response = await runtime.ExecuteAsync<TestRequest, TestResponse>(
             new TestRequest(),
             TestContext.Current.CancellationToken);
 
         response.Success.Should().BeTrue();
         activities.Should().Contain(activity =>
-            activity.DisplayName == "CommerceEdge.commerce_runtime.execute");
+            activity.DisplayName == "CommerceEdge.commerce_runtime.execute"
+            && activity.ParentSpanId == parent.SpanId);
     }
 
     private sealed record TestRequest : CommerceRequest;

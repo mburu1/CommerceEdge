@@ -31,5 +31,9 @@ docker compose -f infra/compose/docker-compose.yml up -d
 dotnet run --project backend/src/CommerceEdge.Api
 ```
 
+## Observability
+
+The local stack includes OpenTelemetry, Serilog, Prometheus, Grafana, and Jaeger. Start it with `./infra/scripts/observability.ps1 -Action Start`; see [`docs/observability/README.md`](docs/observability/README.md) for endpoints and configuration.
+
 ## Documentation
 See [`docs/`](docs/) for architecture, domain model, UML, ERD, API contracts, ADRs, and more.

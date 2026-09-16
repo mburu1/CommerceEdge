@@ -342,7 +342,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (operation, success) (rate(commerceedge_operation_count[5m]))",
+          "expr": "sum by (operation, success) (rate(commerceedge_operation_count_total[5m]))",
           "legendFormat": "{{operation}} / {{success}}",
           "range": true,
           "refId": "A"
@@ -404,7 +404,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(commerceedge_cache_operation_count{operation=\"get\",result=\"hit\"}[5m])) / clamp_min(sum(rate(commerceedge_cache_operation_count{operation=\"get\"}[5m])), 1e-9)",
+          "expr": "sum(rate(commerceedge_cache_operation_count_total{operation=\"get\",result=\"hit\"}[5m])) / clamp_min(sum(rate(commerceedge_cache_operation_count_total{operation=\"get\"}[5m])), 1e-9)",
           "legendFormat": "cache hit ratio",
           "range": true,
           "refId": "A"
@@ -489,8 +489,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (event.type) (rate(commerceedge_messaging_published_count[5m]))",
-          "legendFormat": "{{event.type}}",
+          "expr": "sum by (event_type) (rate(commerceedge_messaging_published_count_total[5m]))",
+          "legendFormat": "{{event_type}}",
           "range": true,
           "refId": "A"
         }
@@ -574,8 +574,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "process_runtime_dotnet_memory_total_memory_bytes",
-          "legendFormat": "managed + native memory",
+          "expr": "process_runtime_dotnet_gc_objects_size_bytes",
+          "legendFormat": "managed heap objects",
           "range": true,
           "refId": "A"
         }

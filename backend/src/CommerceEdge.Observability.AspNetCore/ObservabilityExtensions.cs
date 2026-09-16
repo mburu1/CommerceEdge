@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -26,6 +25,9 @@ public static class ObservabilityServiceCollectionExtensions
         var options = configuration.GetSection(ObservabilityOptions.Section).Get<ObservabilityOptions>()
                       ?? new ObservabilityOptions();
         options.ServiceName = serviceName;
+        var protocol = string.IsNullOrWhiteSpace(options.OtlpProtocol)
+            ? "grpc"
+            : options.OtlpProtocol;
 
         services.AddSingleton(options);
         services.AddOptions<ObservabilityOptions>()
@@ -38,6 +40,11 @@ public static class ObservabilityServiceCollectionExtensions
                 serviceVersion: options.ServiceVersion))
             .WithTracing(tracing =>
             {
+                var traceSampleRate = double.IsFinite(options.TraceSampleRate)
+                    ? Math.Clamp(options.TraceSampleRate, 0d, 1d)
+                    : 0d;
+                tracing.SetSampler(new ParentBasedSampler(
+                    new TraceIdRatioBasedSampler(traceSampleRate)));
                 tracing.AddSource(CommerceEdgeTelemetry.ActivitySourceName);
                 tracing.AddAspNetCoreInstrumentation(instrumentation =>
                     instrumentation.RecordException = true);
@@ -46,7 +53,8 @@ public static class ObservabilityServiceCollectionExtensions
 
                 if (!string.IsNullOrWhiteSpace(options.OtlpEndpoint))
                 {
-                    tracing.AddOtlpExporter(exporter => ConfigureOtlpExporter(exporter, options));
+                    tracing.AddOtlpExporter(exporter =>
+                        ConfigureOtlpExporter(exporter, options.OtlpEndpoint!, protocol));
                 }
             })
             .WithMetrics(metrics =>
@@ -65,9 +73,13 @@ public static class ObservabilityServiceCollectionExtensions
                     });
                 }
 
-                if (!string.IsNullOrWhiteSpace(options.OtlpEndpoint))
+                var metricsEndpoint = string.IsNullOrWhiteSpace(options.OtlpMetricsEndpoint)
+                    ? options.OtlpEndpoint
+                    : options.OtlpMetricsEndpoint;
+                if (options.OtlpMetricsEnabled && !string.IsNullOrWhiteSpace(metricsEndpoint))
                 {
-                    metrics.AddOtlpExporter(exporter => ConfigureOtlpExporter(exporter, options));
+                    metrics.AddOtlpExporter(exporter =>
+                        ConfigureOtlpExporter(exporter, metricsEndpoint, protocol));
                 }
             });
 
@@ -106,10 +118,11 @@ public static class ObservabilityServiceCollectionExtensions
 
     private static void ConfigureOtlpExporter(
         OtlpExporterOptions exporter,
-        ObservabilityOptions options)
+        string endpoint,
+        string protocol)
     {
-        exporter.Endpoint = new Uri(options.OtlpEndpoint!);
-        exporter.Protocol = options.OtlpProtocol.Equals("http/protobuf", StringComparison.OrdinalIgnoreCase)
+        exporter.Endpoint = new Uri(endpoint);
+        exporter.Protocol = protocol.Equals("http/protobuf", StringComparison.OrdinalIgnoreCase)
             ? OtlpExportProtocol.HttpProtobuf
             : OtlpExportProtocol.Grpc;
     }
@@ -144,7 +157,10 @@ public static class ObservabilityEndpointRouteBuilderExtensions
     {
         if (options.PrometheusEnabled)
         {
-            endpoints.MapPrometheusScrapingEndpoint(options.PrometheusPath);
+            var path = string.IsNullOrWhiteSpace(options.PrometheusPath)
+                ? "/metrics"
+                : options.PrometheusPath;
+            endpoints.MapPrometheusScrapingEndpoint(path);
         }
 
         return endpoints;

@@ -38,6 +38,7 @@ services:
   api:
     environment:
       - Observability__OtlpEndpoint=http://jaeger:4317
+      - Observability__OtlpMetricsEnabled=false
       - Observability__PrometheusEnabled=true
 
 volumes:

@@ -40,11 +40,14 @@ public static class CommerceEdgeTelemetry
             ? null
             : new ActivityTagsCollection(tags.Select(tag =>
                 new KeyValuePair<string, object?>(tag.Key, tag.Value)));
+        var parentContext = Activity.Current?.Context ?? default(ActivityContext);
         var activity = ActivitySource.StartActivity(
             $"CommerceEdge.{operation}",
             ActivityKind.Internal,
-            default(ActivityContext),
-            tags: activityTags);
+            parentContext,
+            activityTags,
+            null,
+            default);
 
         return new MeasuredOperation(activity, operation, tags);
     }

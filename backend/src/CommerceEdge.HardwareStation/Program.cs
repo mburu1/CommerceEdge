@@ -14,7 +14,10 @@ builder.Services.AddCommerceEdgeObservability(builder.Configuration, "commerceed
 var app = builder.Build();
 
 app.UseCommerceEdgeRequestObservability(app.Configuration);
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseAuthorization();
 app.MapControllers();
 app.MapCommerceEdgeMetrics(app.Services.GetRequiredService<ObservabilityOptions>());

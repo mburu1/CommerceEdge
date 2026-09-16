@@ -1,4 +1,3 @@
-using System.Diagnostics.Metrics;
 using System.Text.Json;
 using CommerceEdge.Application.Abstractions;
 using CommerceEdge.Observability;
