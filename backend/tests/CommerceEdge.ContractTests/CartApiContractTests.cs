@@ -14,7 +14,7 @@ public class CartApiContractTests
         var cartService = Substitute.For<ICartService>();
         var controller = new CartsController(cartService);
 
-        var createResult = await controller.Create(new CommerceEdge.Application.Commands.CreateCartCommand(Guid.NewGuid(), "USD", null), default);
+        var createResult = await controller.Create(new CommerceEdge.Application.Commands.CreateCartCommand(Guid.NewGuid(), "USD", null), TestContext.Current.CancellationToken);
 
         createResult.Should().NotBeNull();
     }
@@ -25,7 +25,7 @@ public class CartApiContractTests
         var cartService = Substitute.For<ICartService>();
         var controller = new CartsController(cartService);
 
-        var result = await controller.GetById(Guid.NewGuid(), default);
+        var result = await controller.GetById(Guid.NewGuid(), TestContext.Current.CancellationToken);
 
         result.Should().NotBeNull();
     }
@@ -36,7 +36,7 @@ public class CartApiContractTests
         var cartService = Substitute.For<ICartService>();
         var controller = new CartsController(cartService);
 
-        var result = await controller.AddLine(Guid.NewGuid(), new CommerceEdge.Application.Commands.AddCartLineCommand(Guid.NewGuid(), Guid.NewGuid(), null, "Widget", "W1", 10m, "USD", 2), default);
+        var result = await controller.AddLine(Guid.NewGuid(), new CommerceEdge.Application.Commands.AddCartLineCommand(Guid.NewGuid(), Guid.NewGuid(), null, "Widget", "W1", 10m, "USD", 2), TestContext.Current.CancellationToken);
 
         result.Should().NotBeNull();
     }

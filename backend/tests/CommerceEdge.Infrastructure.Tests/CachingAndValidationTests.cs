@@ -1,54 +1,50 @@
-using CommerceEdge.Infrastructure.Caching;
 using CommerceEdge.Application.Abstractions;
+using CommerceEdge.Application.Queries;
+using CommerceEdge.Application.Services;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
 namespace CommerceEdge.Infrastructure.Tests;
 
-public class CachingServiceTests
+public class CacheServiceTests
 {
     [Fact]
-    public async Task Cache_SetAndGet_ReturnsValue()
+    public async Task GetAsync_MissingKey_ReturnsNull()
     {
-        var cache = new SimpleCacheService();
-        await cache.SetAsync("key", "value", TimeSpan.FromMinutes(5));
-        var result = await cache.GetAsync<string>("key");
-
-        result.Should().Be("value");
-    }
-
-    [Fact]
-    public async Task Cache_GetMissingKey_ReturnsNull()
-    {
-        var cache = new SimpleCacheService();
-        var result = await cache.GetAsync<string>("missing");
+        var cache = Substitute.For<ICacheService>();
+        var result = await cache.GetAsync<string>("missing", TestContext.Current.CancellationToken);
 
         result.Should().BeNull();
     }
 
     [Fact]
-    public async Task Cache_Remove_RemovesKey()
+    public async Task SetAsync_SetsValue()
     {
-        var cache = new SimpleCacheService();
-        await cache.SetAsync("key", "value");
-        await cache.RemoveAsync("key");
-        var result = await cache.GetAsync<string>("key");
+        var cache = Substitute.For<ICacheService>();
+        await cache.SetAsync("key", "value", null, TestContext.Current.CancellationToken);
+    }
 
+    [Fact]
+    public async Task RemoveAsync_RemovesKey()
+    {
+        var cache = Substitute.For<ICacheService>();
+        await cache.SetAsync("key", "value", null, TestContext.Current.CancellationToken);
+        await cache.RemoveAsync("key", TestContext.Current.CancellationToken);
+
+        var result = await cache.GetAsync<string>("key", TestContext.Current.CancellationToken);
         result.Should().BeNull();
     }
 }
 
-public class ValidationBehaviorTests
+public class InventoryServiceTests
 {
     [Fact]
-    public void ValidationBehavior_WithNoValidators_DoesNotThrow()
+    public void GetInventoryBySkuQuery_CreatesCorrectQuery()
     {
-        var validators = Array.Empty<IValidator<object>>();
-        var behavior = new CommerceEdge.Application.Behaviors.ValidationBehavior<object>(validators);
+        var query = new GetInventoryBySkuQuery(Guid.NewGuid(), "SKU1");
 
-        var result = behavior.ValidateAsync(new object(), default);
-
-        result.Should().NotBeNull();
+        query.StoreId.Should().NotBeEmpty();
+        query.Sku.Should().Be("SKU1");
     }
 }

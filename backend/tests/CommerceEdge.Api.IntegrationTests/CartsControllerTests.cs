@@ -14,7 +14,7 @@ public class CartsControllerTests
         var cartService = Substitute.For<ICartService>();
         var controller = new CartsController(cartService);
 
-        var result = await controller.GetById(Guid.NewGuid(), default);
+        var result = await controller.GetById(Guid.NewGuid(), TestContext.Current.CancellationToken);
 
         result.Should().NotBeNull();
     }
@@ -25,7 +25,7 @@ public class CartsControllerTests
         var cartService = Substitute.For<ICartService>();
         var controller = new CartsController(cartService);
 
-        var result = await controller.Create(new CommerceEdge.Application.Commands.CreateCartCommand(Guid.NewGuid(), "USD", null), default);
+        var result = await controller.Create(new CommerceEdge.Application.Commands.CreateCartCommand(Guid.NewGuid(), "USD", null), TestContext.Current.CancellationToken);
 
         result.Should().NotBeNull();
     }

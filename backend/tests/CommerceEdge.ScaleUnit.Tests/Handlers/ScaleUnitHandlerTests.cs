@@ -1,8 +1,9 @@
-using CommerceEdge.ScaleUnit.Handlers;
+using CommerceEdge.Application.DTOs;
+using CommerceEdge.Application.Queries;
+using CommerceEdge.Application.Services;
 using CommerceEdge.CommerceRuntime.Handlers;
 using CommerceEdge.CommerceRuntime.Requests;
 using CommerceEdge.CommerceRuntime.Responses;
-using CommerceEdge.Application.Services;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
