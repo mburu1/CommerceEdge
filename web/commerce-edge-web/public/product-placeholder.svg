@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title desc">
+  <title id="title">Product image placeholder</title>
+  <desc id="desc">A neutral placeholder for CommerceEdge product imagery.</desc>
+  <rect width="800" height="800" fill="#e2e8f0"/>
+  <path d="M270 530V350c0-55 45-100 100-100h60c55 0 100 45 100 100v180" fill="none" stroke="#94a3b8" stroke-width="36" stroke-linecap="round"/>
+  <path d="M245 350h310" stroke="#94a3b8" stroke-width="36" stroke-linecap="round"/>
+  <circle cx="400" cy="205" r="62" fill="none" stroke="#94a3b8" stroke-width="36"/>
+</svg>
