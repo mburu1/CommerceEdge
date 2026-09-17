@@ -1,7 +1,7 @@
 # ADR-009 — Observability Strategy
 
 ## Status
-Proposed
+Accepted
 
 ## Context
 CommerceEdge runs as multiple deployable services and integrates with SQL Server, Redis, messaging, POS, and hardware workflows. Operators need a consistent view of request health, latency, failures, dependency behavior, and distributed execution without coupling business code to a specific observability vendor.

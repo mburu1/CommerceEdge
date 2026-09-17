@@ -9,6 +9,7 @@ public sealed class ObservabilityOptions
     public string? OtlpEndpoint { get; set; }
     public string? OtlpMetricsEndpoint { get; set; }
     public bool OtlpMetricsEnabled { get; set; } = false;
+    public string? ApplicationInsightsConnectionString { get; set; }
     public string OtlpProtocol { get; set; } = "grpc";
     public double TraceSampleRate { get; set; } = 1.0;
     public bool PrometheusEnabled { get; set; } = true;

@@ -10,6 +10,7 @@ services:
     volumes:
       - prometheus-data:/prometheus
       - ../docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ../docker/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
 
   grafana:
     image: grafana/grafana:11.2.2
@@ -35,10 +36,20 @@ services:
       - "4317:4317"
       - "4318:4318"
 
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.104.0
+    command: ["--config", "/otel-config.yaml"]
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "8888:8888"
+    volumes:
+      - ../docker/otel-collector/config.yaml:/otel-config.yaml:ro
+
   api:
     environment:
       - Observability__OtlpEndpoint=http://jaeger:4317
-      - Observability__OtlpMetricsEnabled=false
+      - Observability__OtlpMetricsEnabled=true
       - Observability__PrometheusEnabled=true
 
 volumes:

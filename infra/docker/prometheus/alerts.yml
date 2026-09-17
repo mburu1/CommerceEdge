@@ -1,0 +1,87 @@
+groups:
+  - name: commercedge.rules
+    rules:
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(
+            commercedge_operation_failure_count[5m]
+          )) by (operation)
+          /
+          sum(rate(
+            commercedge_operation_count[5m]
+          )) by (operation)
+          > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate on {{ $labels.operation }}"
+          description: "Operation {{ $labels.operation }} has a failure rate of {{ $value | humanizePercentage }} over the last 5 minutes."
+
+      - alert: SlowOperations
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum(rate(
+              commercedge_operation_duration_bucket[5m]
+            )) by (le, operation)
+          )
+          > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow operation {{ $labels.operation }}"
+          description: "95th percentile duration for {{ $labels.operation }} is {{ $value }}s over the last 5 minutes."
+
+      - alert: DatabaseUnhealthy
+        expr: |
+          up{job="commerceedge-api", instance=~".*"} == 0
+          or
+          kube_pod_container_status_restarts_total > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "CommerceEdge API unreachable"
+          description: "The CommerceEdge API pod has restarted or is unreachable."
+
+      - alert: RedisUnreachable
+        expr: |
+          redis_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis is unreachable"
+          description: "Redis health check has failed for more than 1 minute."
+
+      - alert: HighRequestLatency
+        expr: |
+          histogram_quantile(
+            0.99,
+            sum(rate(
+              http_request_duration_seconds_bucket{service_name="commerceedge-api"}[5m]
+            )) by (le)
+          )
+          > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High request latency on API"
+          description: "99th percentile request latency is {{ $value }}s over the last 5 minutes."
+
+      - alert: TraceSamplingTooLow
+        expr: |
+          sum(rate(
+            commercedge_operation_count[10m]
+          ))
+          <
+          10
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "Low traffic detected"
+          description: "Less than 10 operations recorded in 10 minutes. Verify trace sampling configuration."
